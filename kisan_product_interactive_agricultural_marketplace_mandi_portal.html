@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#f9f9ff",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#004c16",
+            "primary-container": "#0b6623",
+            "primary-fixed-dim": "#86d988",
+            "secondary": "#056e00",
+            "secondary-container": "#8dfc75",
+            "secondary-fixed": "#8dfc75",
+            "tertiary": "#653400",
+            "tertiary-fixed": "#ffdcc3",
+            "on-surface": "#111c2d",
+            "on-surface-variant": "#40493e",
+            "surface-container": "#e7eeff",
+            "surface-container-low": "#f0f3ff",
+            "surface-container-high": "#dee8ff",
+            "outline-variant": "#bfcaba"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            display: ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes scan { 0% { top: 0%; opacity: 0.8; } 50% { top: 85%; opacity: 1; } 100% { top: 0%; opacity: 0.8; } }
+    .animate-scan { animation: scan 2s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased">
+
+  <!-- Toast Notification Bar -->
+  <div id="toast" class="fixed top-24 right-4 z-50 transform transition-all duration-300 translate-x-32 opacity-0 pointer-events-none bg-primary text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-secondary-fixed/30 font-semibold text-sm">
+    <span class="material-symbols-outlined text-secondary-fixed text-[20px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Operation successful!</span>
+  </div>
+
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 h-20 bg-surface/95 backdrop-blur-md border-b border-surface-container-high z-40 px-4 md:px-8 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsHh0x9QglvdbjzEBd0lhk2x6Q-wv6ZD5TQacTHWeBmh-y8DVrew6P5C_gHUegKc_St2HKNdLdIh-ocLpdx8RGrpuOZewUUaD_wp9jqZszr6dMTd0r-UK5MkxqTI0AkiDbHmesDdcCQj7yQSITKX1yp1dnZcF3BQxO-EjrEBLHUiJ8zvJ8s3cQQJlV8MFpZOyeoARbt4pqQ1AZHcx0THgREOZTdQLbkPl6oB-lS6TosDTa-sfnCNECsmUPR_igTfAHpLI" alt="Kisan Product Logo" class="h-11 w-11 rounded-full object-cover shadow border border-primary/20"/>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="font-display font-extrabold text-xl text-primary tracking-tight">Kisan Product</span>
+          <span class="text-xs bg-tertiary-fixed text-tertiary px-1.5 py-0.5 rounded font-bold hidden sm:inline">kisanproduct.com</span>
+        </div>
+        <div class="text-[11px] text-tertiary font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px]">verified</span>
+          <span>Owner &amp; Founder: Malik Siraj Kisan Zamindar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-1 text-sm font-semibold text-on-surface-variant">
+      <a href="#mandi-rates" class="px-3 py-1.5 rounded-lg bg-primary-container text-white">Mandi Rates</a>
+      <a href="#produce-market" class="px-3 py-1.5 rounded-lg hover:bg-surface-container">Buy &amp; Sell Produce</a>
+      <a href="#transport-logistics" class="px-3 py-1.5 rounded-lg hover:bg-surface-container">Transport Fleet</a>
+      <a href="#scanner-utility" class="px-3 py-1.5 rounded-lg hover:bg-surface-container">Agri QR Scanner</a>
+      <a href="#global-export" class="px-3 py-1.5 rounded-lg hover:bg-surface-container">Global Export</a>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2">
+      <!-- Wallet Pill -->
+      <button onclick="openWalletModal()" class="flex items-center gap-1.5 bg-surface-container-high px-3 py-1.5 rounded-xl font-mono text-xs font-bold text-primary hover:bg-surface-container border border-outline-variant/30">
+        <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+        <span id="headerWallet">PKR 0.00</span>
+      </button>
+
+      <!-- Post Crop -->
+      <button onclick="openSellModal()" class="bg-primary hover:bg-primary-container text-white px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 shadow active:scale-95 transition-all">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        <span>Direct Fasal Bechein</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-20">
+    <!-- Live Mandi Ticker Strip -->
+    <div class="bg-primary text-white py-2 px-4 text-xs font-mono flex items-center justify-between overflow-x-auto no-scrollbar cursor-pointer shadow-inner" onclick="openMandiModal()">
+      <div class="flex items-center gap-2 shrink-0 pr-4">
+        <span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed animate-ping"></span>
+        <span class="font-bold uppercase tracking-wider text-secondary-fixed">Live Mandi Boli:</span>
+      </div>
+      <div class="flex items-center gap-6 whitespace-nowrap">
+        <span>Gandam Multan: <strong class="text-white">PKR 3,950/40kg</strong> <span class="text-secondary-fixed">▲+2.4%</span></span>
+        <span>•</span>
+        <span>Basmati Gujranwala: <strong class="text-white">PKR 11,200/40kg</strong> <span class="text-secondary-fixed">▲+1.1%</span></span>
+        <span>•</span>
+        <span>Kapas Phutti R.Y. Khan: <strong class="text-white">PKR 8,700/40kg</strong> <span class="text-secondary-fixed">▲+3.8%</span></span>
+        <span>•</span>
+        <span>Sabzi Mirch Badin: <strong class="text-white">PKR 5,400/40kg</strong> <span class="text-red-300">▼-0.8%</span></span>
+        <span>•</span>
+        <span>Kinnow Sargodha: <strong class="text-white">PKR 1,450/Crate</strong> <span class="text-secondary-fixed">▲+5.0%</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-1 text-secondary-fixed shrink-0 pl-4 font-sans font-bold text-[11px]">
+        <span class="material-symbols-outlined text-[15px]">verified</span>
+        <span>0% Middleman Deduction</span>
+      </div>
+    </div>
+
+    <!-- Main Hero Banner Section -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-surface-container-high bg-black">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqRpy_C5QEyc7kLha8rcOFH_AzDbFS6vgP9iQpJHCvVVMMrSDO-qGeu21ZBo1qqnAENXMg6HFSdmTaMoMdyMEGJWT0CJK2QRmlQAsESn8rJ0hnnH2vapnSzA9dMlQWnT_xvHeEtEu3hR2yyCVBbY-NFxcyf_ATAp0As3moUbAdC6sIFV5nU1jImvEK6D939FRTyxWTHI7V1CplHf3tIYHQG5VuOmIM7K8BNmyxr34plMbVJ0ZgaBjkp41GHhWhFqXmJoM" alt="Kisan Product Main Hero Banner" class="w-full h-[360px] md:h-[500px] object-cover opacity-95"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-10 text-white">
+          <div class="inline-flex items-center gap-2 bg-secondary/80 backdrop-blur-md px-3.5 py-1 rounded-full text-secondary-fixed text-xs font-bold w-fit mb-3 border border-secondary-fixed/30">
+            <span class="material-symbols-outlined text-[16px]">eco</span>
+            <span>Seedha Zamindar Se Tajir Tak • 100% Commission-Free</span>
+          </div>
+          <h1 class="font-display text-3xl md:text-5xl font-extrabold tracking-tight leading-tight max-w-3xl">
+            Farmers to Global Market
+          </h1>
+          <p class="text-surface-container-high text-sm md:text-lg mt-2 font-medium">
+            Kisaan Ki Pasand — Global Tak <span class="text-secondary-fixed">|</span> Kheti • Mandi • Transport • Export • Import
+          </p>
+
+          <!-- Main Hero CTAs -->
+          <div class="flex flex-wrap items-center gap-3 mt-6">
+            <button onclick="openSellModal()" class="bg-secondary-fixed text-primary px-6 py-3.5 rounded-xl font-bold text-sm shadow-lg hover:bg-secondary-fixed-dim transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">agriculture</span>
+              <span>Direct Fasal Bechein (Sell Produce)</span>
+            </button>
+            <button onclick="openMandiModal()" class="bg-white/95 text-primary px-5 py-3.5 rounded-xl font-bold text-sm shadow hover:bg-white transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">trending_up</span>
+              <span>Live Mandi Rate Dekhein</span>
+            </button>
+            <button onclick="openTajirDrawer()" class="bg-primary/90 text-white border border-secondary-fixed/40 px-5 py-3.5 rounded-xl font-bold text-sm shadow hover:bg-primary transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">handshake</span>
+              <span>Tajir Rabta (Connect Buyer)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Category Services Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6">
+        <button onclick="openMandiModal()" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">psychiatry</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Crop Rates</span>
+          <span class="text-[11px] text-on-surface-variant">Behtar Faisla</span>
+        </button>
+        <button onclick="filterProduceUI('veg')" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-secondary/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">nutrition</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Vegetables</span>
+          <span class="text-[11px] text-on-surface-variant">Taaza Munafa</span>
+        </button>
+        <button onclick="openScannerModal()" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-tertiary-fixed text-tertiary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">science</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Agri Inputs</span>
+          <span class="text-[11px] text-on-surface-variant">Spray &amp; Khad Scan</span>
+        </button>
+        <button onclick="openLogisticsModal()" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">local_shipping</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Transport Fleet</span>
+          <span class="text-[11px] text-on-surface-variant">Apna Mal Manzil Tak</span>
+        </button>
+        <button onclick="openExportModal('Super Kernel Basmati Rice', '$1,120 / Ton', 'Jebel Ali Port (UAE)')" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-surface-container-high text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">directions_boat</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Export Desks</span>
+          <span class="text-[11px] text-on-surface-variant">Duniya Ke Bazaar</span>
+        </button>
+        <button onclick="openWalletModal()" class="p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/30 flex flex-col items-center text-center shadow-sm transition-all group">
+          <div class="w-11 h-11 rounded-full bg-secondary-container text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <span class="font-bold text-sm text-on-surface mt-2">Balance &amp; Khata</span>
+          <span class="text-[11px] text-on-surface-variant">0% Commission</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Founder Spotlight Section -->
+    <section class="w-full bg-surface-container-low py-12 px-4 md:px-8 border-y border-surface-container-high">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-5 relative">
+          <div class="rounded-3xl overflow-hidden shadow-2xl border border-surface-container-high">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuADlOMM5k7rc1Hw9RJTKX5o4R52kK_dzSHfYAgtoMSmANnuue1U2Re3rsXJG1P4gLfB-Sa2-2QJdXcNtsDBp61l7XMZqy-oy0L3wVfepJgOppo2Hfr4RJcDMVMX_VilsRgwV83GOy-YHDvCpc8oIhCiyXDPTwqHHw7NAXKOhqyKVt_r-h9HuC33-hTaNeTcIr2aYRKsdVIUq1trMn7opI4dJG1mQH-g64xB08QRe-102D53-RJOZZmfj4Ah9VLHLuJBs2U" alt="Founder Malik Siraj Kisan Zamindar in Wheat Field" class="w-full h-[440px] object-cover object-top"/>
+          </div>
+          <div class="absolute bottom-4 inset-x-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-outline-variant/30 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-extrabold text-lg text-primary">Malik Siraj</h3>
+              <p class="text-xs text-on-surface-variant font-semibold">Kisan Zamindar • Founder &amp; Visionary</p>
+            </div>
+            <span class="material-symbols-outlined text-primary text-3xl">verified</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
+            <span class="material-symbols-outlined text-[16px]">campaign</span>
+            <span>Kisan Se Tajir Tak — Har Qadam Par Saath</span>
+          </div>
+          <h2 class="font-display text-2xl md:text-4xl font-extrabold text-primary tracking-tight leading-snug">
+            "Eliminating middleman cuts so our hard-working kisans receive every rupee they deserve."
+          </h2>
+          <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+            For generations, the Pakistani farmer has surrendered 15% to 25% of their hard-earned crop value to unaccountable arhtis and arbitrary weighment deductions. <strong>Kisan Product</strong> bridges the grower directly to wholesale buyers, terminal mills, and sea-freight containers.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div class="p-3 bg-white rounded-xl shadow-sm border border-outline-variant/20">
+              <span class="font-display text-2xl font-black text-primary block">50,000+</span>
+              <span class="text-xs text-on-surface-variant">Registered Kisans</span>
+            </div>
+            <div class="p-3 bg-white rounded-xl shadow-sm border border-outline-variant/20">
+              <span class="font-display text-2xl font-black text-tertiary block">1,200+</span>
+              <span class="text-xs text-on-surface-variant">Active Exporters</span>
+            </div>
+            <div class="p-3 bg-white rounded-xl shadow-sm border border-outline-variant/20">
+              <span class="font-display text-2xl font-black text-secondary block">0%</span>
+              <span class="text-xs text-on-surface-variant">Middleman Fee</span>
+            </div>
+            <div class="p-3 bg-white rounded-xl shadow-sm border border-outline-variant/20">
+              <span class="font-display text-2xl font-black text-primary block">45+</span>
+              <span class="text-xs text-on-surface-variant">Tehsil Mandis</span>
+            </div>
+          </div>
+          <div class="pt-2 flex flex-wrap items-center gap-3">
+            <button onclick="openZamindarModal('Malik Siraj (Founder Helpline)', '+92 300 8765432', 'Central Mandi Hub, Sargodha & Lahore', 'All Crops Advisory')" class="bg-secondary text-white px-5 py-3 rounded-xl font-bold text-sm shadow hover:bg-secondary/90 transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">chat</span>
+              <span>WhatsApp Malik Siraj Helpline</span>
+            </button>
+            <div class="text-xs font-mono text-on-surface-variant flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-[18px]">call</span>
+              <span>Toll Free: 0800-KISAN-00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Direct Produce Marketplace -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-12" id="produce-market">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <div class="flex items-center gap-1.5 text-secondary font-bold text-xs uppercase tracking-wider">
+            <span class="material-symbols-outlined text-[16px]">storefront</span>
+            <span>Direct Agricultural Marketplace</span>
+          </div>
+          <h2 class="font-display text-2xl md:text-3xl font-extrabold text-primary tracking-tight mt-1">
+            Live Produce Lots Ready for Dispatch
+          </h2>
+        </div>
+        <!-- Filter Tabs -->
+        <div class="flex items-center gap-1.5 bg-surface-container p-1 rounded-xl overflow-x-auto no-scrollbar">
+          <button onclick="filterProduceUI('all')" id="btn-filter-all" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-primary text-white shadow-sm">All Crops</button>
+          <button onclick="filterProduceUI('wheat')" id="btn-filter-wheat" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-primary">Wheat</button>
+          <button onclick="filterProduceUI('veg')" id="btn-filter-veg" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-primary">Vegetables</button>
+          <button onclick="filterProduceUI('rice')" id="btn-filter-rice" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-primary">Basmati</button>
+          <button onclick="filterProduceUI('cotton')" id="btn-filter-cotton" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-primary">Cotton</button>
+        </div>
+      </div>
+
+      <!-- Produce Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Spotlight Chili Lot Card (with authentic image) -->
+        <div class="lg:col-span-5 bg-white rounded-3xl overflow-hidden shadow-lg border border-outline-variant/30 flex flex-col justify-between">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8NK1eItcMYomjOWveFAs9Rgn1CmCszfeVbSkL0xwEImUFt-Ir2cy_NPjvA8pKHqFqZSXJxlH7toPAJFC9RfxtHFyEzW7j4cqNa7VAiI_ihCfBVvSopmMYl9p2_oVPVs9pJ39spu14R4dyP_8rc6HbBJNjDgZ9uT5S-CXMu_IrFMWz35QfSKQlo3AVn9v-s0ZNTb3hCRd5UFq-ycHkIVl9wk9NV0dB_9Nx_yQIe9nTPIIE6Gvn9dZFjlo37XJGMHqVJxA" alt="Mandi Green Chili Lot" class="w-full h-full object-cover"/>
+            <span class="absolute top-3 left-3 bg-secondary-fixed text-primary px-3 py-1 rounded-full text-xs font-bold shadow">
+              🔥 Hot Mandi Lot • Fresh Harvest
+            </span>
+            <span class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-xs font-mono">
+              Badin Mandi, Sindh
+            </span>
+          </div>
+          <div class="p-6 flex flex-col flex-1 justify-between gap-4">
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="font-display font-extrabold text-lg text-primary">Sindh Grade-A Fresh Green Chilies</h3>
+                <span class="font-mono text-base font-bold text-tertiary">PKR 5,400 / Md</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed">
+                Super firm, dark green chilies harvested at sunrise. 320 Maunds ready for bulk dispatch to Karachi or reefer export.
+              </p>
+            </div>
+            <div class="grid grid-cols-3 gap-2 bg-surface-container-low p-3 rounded-2xl text-center text-xs">
+              <div><span class="text-on-surface-variant block text-[10px]">Lot Size</span><strong class="font-mono">320 Maunds</strong></div>
+              <div><span class="text-on-surface-variant block text-[10px]">Moisture</span><strong class="font-mono">11.8%</strong></div>
+              <div><span class="text-on-surface-variant block text-[10px]">Dispatch</span><strong class="text-secondary">Immediate</strong></div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="openZamindarModal('Wali Muhammad Zamindar', '+92 312 9988776', 'Taluka Matli, Badin, Sindh', 'Sindh Grade-A Green Chilies')" class="bg-surface-container-high hover:bg-surface-container text-primary py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border border-outline-variant/30">
+                <span class="material-symbols-outlined text-[18px]">call</span>
+                <span>Direct Call Zamindar</span>
+              </button>
+              <button onclick="openBoliModal('Sindh Grade-A Green Chilies', 5400, 320, 'Wali Muhammad Zamindar', 'Taluka Matli, Badin', 'veg')" class="bg-primary hover:bg-primary-container text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow">
+                <span class="material-symbols-outlined text-[18px]">gavel</span>
+                <span>Lock Boli / Buy Lot</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Crops Listing Container -->
+        <div id="produceFeed" class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Smart Zamindar Utilities Section -->
+    <section class="w-full bg-surface-container-low py-12 px-4 md:px-8 border-t border-surface-container-high" id="scanner-utility">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-secondary">Smart Zamindar Utilities</span>
+          <h2 class="font-display text-2xl md:text-3xl font-extrabold text-primary tracking-tight mt-1">
+            Precision Field &amp; Mandi Tools
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Tool 1: Scanner -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+              </div>
+              <h3 class="font-bold text-base text-on-surface">Pesticide QR Scanner</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Verify original chemical batches and protect against fake duplicates (Do Numbri).</p>
+            </div>
+            <button onclick="openScannerModal()" class="mt-4 w-full bg-tertiary hover:bg-tertiary/90 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">document_scanner</span>
+              <span>Scan Pesticide Batch</span>
+            </button>
+          </div>
+
+          <!-- Tool 2: Mandi Rates -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/20 flex flex-col justify-between" id="mandi-rates">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-[24px]">analytics</span>
+              </div>
+              <h3 class="font-bold text-base text-on-surface">Mandi Benchmark</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Today's official government committee mandi rates across 45+ tehsils.</p>
+            </div>
+            <button onclick="openMandiModal()" class="mt-4 w-full bg-primary/10 hover:bg-primary/20 text-primary py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">table_chart</span>
+              <span>View All 45 Mandis</span>
+            </button>
+          </div>
+
+          <!-- Tool 3: Weather -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-secondary-container text-secondary flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-[24px]">cloud</span>
+              </div>
+              <h3 class="font-bold text-base text-on-surface">Mausam &amp; Sowing Alert</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Sargodha &amp; Indus Basin: 24°C, 48% Humidity. Optimal wheat spraying conditions.</p>
+            </div>
+            <button onclick="triggerToast('7-Day Advisory: Clear skies. Canal watering recommended within 48h.')" class="mt-4 w-full bg-surface-container hover:bg-surface-container-high text-primary py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+              <span>7-Day Sowing Forecast</span>
+            </button>
+          </div>
+
+          <!-- Tool 4: Wallet -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/20 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center mb-3 shadow">
+                <span class="material-symbols-outlined text-[24px]">payments</span>
+              </div>
+              <h3 class="font-bold text-base text-on-surface">Digital Khata &amp; Ledger</h3>
+              <p class="text-xs text-on-surface-variant mt-1">100% Secure Escrow. Receive guaranteed payouts without middleman delays.</p>
+            </div>
+            <button onclick="openWalletModal()" class="mt-4 w-full bg-primary hover:bg-primary-container text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow">
+              <span class="material-symbols-outlined text-[18px]">account_balance</span>
+              <span>Deposit / Connect Bank</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transport & Logistics Calculator -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-12" id="transport-logistics">
+      <div class="bg-surface-container-high rounded-3xl p-6 md:p-10 border border-surface-container-high shadow-md">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-4">
+            <span class="bg-secondary text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Fleet Logistics</span>
+            <h2 class="font-display text-2xl md:text-3xl font-extrabold text-primary tracking-tight">
+              Direct Trucking &amp; Reefer Containers from Farm Gate to Port
+            </h2>
+            <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed">
+              Book verified pickups, 6-wheeler Mazdas, Bedford 10-wheelers, and temperature-controlled cold chain Reefer vans with real-time GPS tracking and transit insurance.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div class="bg-white p-3.5 rounded-2xl shadow-sm text-xs">
+                <strong class="text-primary block font-bold mb-1">Farm Pickup</strong>
+                <span class="text-on-surface-variant text-[11px]">Direct loading at field or dharak.</span>
+              </div>
+              <div class="bg-white p-3.5 rounded-2xl shadow-sm text-xs">
+                <strong class="text-primary block font-bold mb-1">Reefer Vans</strong>
+                <span class="text-on-surface-variant text-[11px]">Citrus &amp; mango cold preservation.</span>
+              </div>
+              <div class="bg-white p-3.5 rounded-2xl shadow-sm text-xs">
+                <strong class="text-primary block font-bold mb-1">Transit Insurance</strong>
+                <span class="text-on-surface-variant text-[11px]">100% loss &amp; accident security.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Freight Rate Calculator -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-lg border border-outline-variant/30 space-y-3">
+            <h3 class="font-bold text-sm text-primary flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[20px]">calculate</span>
+              <span>Freight Rate Calculator (Kiraya Check)</span>
+            </h3>
+            <div class="space-y-2.5 text-xs">
+              <div>
+                <label class="font-semibold text-on-surface-variant block mb-1">Origin (Kahan Se)</label>
+                <select id="calcOrigin" onchange="calcFreight()" class="w-full bg-surface-container-low rounded-lg p-2 text-xs border-0 font-medium">
+                  <option value="Sargodha">Sargodha (Bhagtanwala)</option>
+                  <option value="Multan">Multan Ghalla Mandi</option>
+                  <option value="Badin">Badin (Sindh)</option>
+                  <option value="Sahiwal">Sahiwal Maize Hub</option>
+                </select>
+              </div>
+              <div>
+                <label class="font-semibold text-on-surface-variant block mb-1">Destination (Kahan Tak)</label>
+                <select id="calcDest" onchange="calcFreight()" class="w-full bg-surface-container-low rounded-lg p-2 text-xs border-0 font-medium">
+                  <option value="Karachi Port Qasim">Karachi Port Qasim (Export Wharf)</option>
+                  <option value="Lahore Terminal">Lahore Badami Bagh Terminal</option>
+                  <option value="Faisalabad Mills">Faisalabad Textile &amp; Flour Mills</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="font-semibold text-on-surface-variant block mb-1">Vehicle</label>
+                  <select id="calcVeh" onchange="calcFreight()" class="w-full bg-surface-container-low rounded-lg p-2 text-xs border-0">
+                    <option value="mazda">Mazda 6-Wheeler</option>
+                    <option value="shehzore">Shehzore Pickup</option>
+                    <option value="tenwheeler">10-Wheeler Truck</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="font-semibold text-on-surface-variant block mb-1">Load (Maunds)</label>
+                  <input id="calcMaunds" type="number" value="350" oninput="calcFreight()" class="w-full bg-surface-container-low rounded-lg p-2 text-xs border-0 font-mono font-bold"/>
+                </div>
+              </div>
+              <div class="p-3 bg-surface-container rounded-xl flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-on-surface-variant block">Estimated Direct Freight:</span>
+                  <span id="calcTotal" class="font-mono text-lg font-extrabold text-primary">PKR 78,500</span>
+                </div>
+                <span class="text-[11px] bg-secondary-fixed text-primary font-bold px-2 py-0.5 rounded">Save 18%</span>
+              </div>
+              <button onclick="openLogisticsModal()" class="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+                <span>Book Verified Transport Driver</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Export Desks -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-12" id="global-export">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-tertiary">International Mandi Desks</span>
+          <h2 class="font-display text-2xl font-extrabold text-primary tracking-tight mt-1">
+            Pakistani Crops in Gulf, EU &amp; Asia-Pacific
+          </h2>
+        </div>
+        <span class="bg-tertiary-fixed text-tertiary font-bold text-xs px-3 py-1.5 rounded-lg w-fit">
+          Dubai Al-Aweer Mandi Daily Direct Link
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+          <div class="space-y-1.5">
+            <span class="text-xs font-mono bg-surface-container px-2 py-0.5 rounded text-primary font-bold">Jebel Ali Port</span>
+            <h3 class="font-bold text-base text-primary">Super Kernel Basmati Rice</h3>
+            <p class="text-sm font-mono font-bold">$1,120 <span class="text-xs text-on-surface-variant font-normal">/ Metric Ton FOB Karachi</span></p>
+            <p class="text-xs text-on-surface-variant">High elongation, 18-month aged. Full SGS certificate pack included.</p>
+          </div>
+          <button onclick="openExportModal('Super Kernel Basmati Rice', '$1,120 / Ton', 'Jebel Ali Port (UAE)')" class="mt-4 text-xs font-bold text-primary hover:underline text-left flex items-center gap-1">
+            <span>Inspect LC Terms &amp; Phytosanitary</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+          <div class="space-y-1.5">
+            <span class="text-xs font-mono bg-surface-container px-2 py-0.5 rounded text-primary font-bold">Frankfurt &amp; Heathrow</span>
+            <h3 class="font-bold text-base text-primary">Chaunsa &amp; Sindhri Mangoes</h3>
+            <p class="text-sm font-mono font-bold">$3.80 <span class="text-xs text-on-surface-variant font-normal">/ 1.5kg Air Freight Gift Box</span></p>
+            <p class="text-xs text-on-surface-variant">Hot Water Treatment (HWT) certified, zero fruit-fly tolerance.</p>
+          </div>
+          <button onclick="openExportModal('Chaunsa & Sindhri Mangoes', '$3.80 / Box', 'Frankfurt & Heathrow')" class="mt-4 text-xs font-bold text-primary hover:underline text-left flex items-center gap-1">
+            <span>Inspect LC Terms &amp; Phytosanitary</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+          <div class="space-y-1.5">
+            <span class="text-xs font-mono bg-surface-container px-2 py-0.5 rounded text-primary font-bold">Jeddah Islamic Port</span>
+            <h3 class="font-bold text-base text-primary">Fresh Sargodha Kinnow</h3>
+            <p class="text-sm font-mono font-bold">$680 <span class="text-xs text-on-surface-variant font-normal">/ Metric Ton Reefer</span></p>
+            <p class="text-xs text-on-surface-variant">Food-grade waxed, count 48/54/60, kept at 4°C sea voyage.</p>
+          </div>
+          <button onclick="openExportModal('Fresh Sargodha Kinnow Mandarin', '$680 / Ton', 'Jeddah & Doha Wharf')" class="mt-4 text-xs font-bold text-primary hover:underline text-left flex items-center gap-1">
+            <span>Inspect LC Terms &amp; Phytosanitary</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-surface-container-low border-t border-surface-container-high py-10 px-4 md:px-8 text-xs text-on-surface-variant">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJo_CQQVB53kG55JX0ucw5oZdGoWea_ni21_hMwtRE1pVP247ZaOPrgeFO5eyeWBAJN7f5iy3iCmX-46Sd53fZIfAk30XyBE3L00mjBhqWJSYYM_dxveU_SNepd71QR8Q6K36kuRLWMITGg5zTaq8C3TCKuylnhUWzE9I-djRXM6NaLtgfzyGmYvUvYIzsbB_8ymER6ZBHwypDocOhXciTCnLEI5fQ-Bjnc6yL1lLs-Jhe_Dc6FeemcQAJBuB-iTTT3-o" alt="Kisan Product Logo" class="h-8 w-8 rounded-full object-cover"/>
+        <span class="font-display font-extrabold text-sm text-primary">Kisan Product (kisanproduct.com)</span>
+      </div>
+      <div>
+        Patrolled and Managed by <strong>Malik Siraj Kisan Zamindar</strong>. Kisan Se Tajir Tak - Har Qadam Par Saath.
+      </div>
+      <div class="flex items-center gap-4">
+        <button onclick="openSellModal()" class="hover:text-primary">Post Crop</button>
+        <button onclick="openMandiModal()" class="hover:text-primary">Mandi Rates</button>
+        <button onclick="openTajirDrawer()" class="hover:text-primary">Tajir Registry</button>
+        <button onclick="openWalletModal()" class="hover:text-primary font-bold text-primary">Khata Ledger</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================== ALL INTERACTIVE MODALS ======================== -->
+
+  <!-- 1. Mandi Boli / Escrow Modal -->
+  <div id="modalBoli" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">gavel</span>
+          <h3 class="font-display font-extrabold text-lg text-primary">Lock Mandi Boli &amp; Escrow</h3>
+        </div>
+        <button onclick="closeModal('modalBoli')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <div class="bg-surface-container-low p-3.5 rounded-2xl space-y-1 text-xs">
+        <div class="flex justify-between"><span class="text-on-surface-variant">Crop:</span> <strong id="boliCropTitle" class="text-on-surface">Wheat Akbar-19</strong></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Grower:</span> <span id="boliGrower">Chaudhry Riaz Zamindar</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Location:</span> <span id="boliLocation">Shujabad, Multan</span></div>
+      </div>
+      <!-- Price Adjuster -->
+      <div class="bg-surface-container p-3.5 rounded-2xl flex items-center justify-between">
+        <button onclick="adjustBoliPrice(-50)" class="w-9 h-9 rounded-xl bg-white font-bold text-primary text-base shadow">-50</button>
+        <div class="text-center">
+          <span class="text-[11px] text-on-surface-variant block">Rate / Maund</span>
+          <span id="boliRateDisplay" class="font-mono text-xl font-black text-primary">PKR 3,950</span>
+        </div>
+        <button onclick="adjustBoliPrice(50)" class="w-9 h-9 rounded-xl bg-white font-bold text-primary text-base shadow">+50</button>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div>
+          <label class="font-semibold text-on-surface-variant block mb-1">Maunds</label>
+          <input id="boliQtyInput" type="number" value="100" oninput="recalcBoliTotal()" class="w-full bg-surface-container-low rounded-xl p-2 font-mono font-bold border-0"/>
+        </div>
+        <div>
+          <label class="font-semibold text-on-surface-variant block mb-1">Escrow Total</label>
+          <div id="boliTotalDisplay" class="p-2 bg-secondary-container/40 rounded-xl font-mono font-extrabold text-primary text-sm text-right">
+            PKR 395,000
+          </div>
+        </div>
+      </div>
+      <button onclick="confirmBoliDeposit()" class="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-xl font-bold text-sm shadow flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">lock</span>
+        <span>Confirm &amp; Deposit to Escrow</span>
+      </button>
+      <span class="text-[10px] text-center text-on-surface-variant block">Funds held securely until digital weight verification.</span>
+    </div>
+  </div>
+
+  <!-- 2. Direct Call / Zamindar Connect Modal -->
+  <div id="modalZamindar" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-outline-variant/30">
+      <div class="w-16 h-16 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+        <span class="material-symbols-outlined text-3xl">person</span>
+      </div>
+      <div>
+        <h4 id="zamName" class="font-display font-extrabold text-base text-primary">Malik Siraj</h4>
+        <span class="text-[11px] bg-secondary-fixed text-primary px-2 py-0.5 rounded-full font-bold">Verified Registered Zamindar</span>
+        <p id="zamLoc" class="text-xs text-on-surface-variant mt-1">Sargodha, Punjab</p>
+      </div>
+      <div class="bg-surface-container p-3 rounded-xl text-xs text-left">
+        <span class="text-on-surface-variant block text-[10px]">Crop Lot:</span>
+        <strong id="zamCrop" class="text-primary font-bold">Super Kernel Steamed Lot</strong>
+      </div>
+      <div class="space-y-2">
+        <a id="zamCallLink" href="tel:+923001234567" onclick="triggerToast('Connecting direct cellular call...')" class="w-full bg-primary text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow">
+          <span class="material-symbols-outlined text-[18px]">phone</span>
+          <span>Dial Direct Phone Call</span>
+        </a>
+        <a id="zamWaLink" href="https://wa.me/923001234567" target="_blank" onclick="triggerToast('Launching WhatsApp Chat...')" class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow">
+          <span class="material-symbols-outlined text-[18px]">chat</span>
+          <span>WhatsApp Zamindar</span>
+        </a>
+      </div>
+      <button onclick="closeModal('modalZamindar')" class="text-xs text-on-surface-variant underline">Close</button>
+    </div>
+  </div>
+
+  <!-- 3. Sell Your Crop / Fasal Listing Modal -->
+  <div id="modalSell" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-lg w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-2xl">add_business</span>
+          <h3 class="font-display font-extrabold text-lg text-primary">Post Crop to Mandi Board</h3>
+        </div>
+        <button onclick="closeModal('modalSell')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <form onsubmit="handlePostCrop(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Crop Category *</label>
+            <select id="newCat" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium">
+              <option value="wheat">Gandam (Wheat)</option>
+              <option value="rice">Rice (Basmati / Kainat)</option>
+              <option value="cotton">Cotton (White Gold)</option>
+              <option value="veg">Vegetables (Sabziyan)</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Lot Title &amp; Variety *</label>
+            <input id="newTitle" required placeholder="e.g. Akbar-19 Wheat Super Grade" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Total Maunds *</label>
+            <input id="newQty" type="number" required placeholder="e.g. 500" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-mono font-bold"/>
+          </div>
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Expected Rate (PKR / Md) *</label>
+            <input id="newRate" type="number" required placeholder="e.g. 4100" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-mono font-bold"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Zamindar Name *</label>
+            <input id="newGrower" required placeholder="e.g. Chaudhry Aslam" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium"/>
+          </div>
+          <div>
+            <label class="font-semibold text-on-surface-variant block mb-1">Phone / WhatsApp *</label>
+            <input id="newPhone" required placeholder="+92 300 1234567" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium"/>
+          </div>
+        </div>
+        <div>
+          <label class="font-semibold text-on-surface-variant block mb-1">Farm / Tehsil Location *</label>
+          <input id="newLocation" required placeholder="e.g. Tehsil Kot Radha Kishan, Kasur" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium"/>
+        </div>
+        <button type="submit" class="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-xl font-bold text-sm shadow flex items-center justify-center gap-2 mt-2">
+          <span class="material-symbols-outlined text-[18px]">send</span>
+          <span>Publish to Mandi Live Board</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Mandi Rates Telemetry Matrix Modal -->
+  <div id="modalMandi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-2xl w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">analytics</span>
+          <h3 class="font-display font-extrabold text-lg text-primary">Live Mandi Benchmark Rates</h3>
+        </div>
+        <button onclick="closeModal('modalMandi')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <input id="mandiSearch" oninput="searchMandi()" placeholder="Search mandi hub or crop (e.g. Multan, Rice, Badin)..." class="w-full bg-surface-container-low rounded-xl p-2.5 text-xs border-0 font-medium"/>
+      <div class="overflow-y-auto no-scrollbar flex-1 border rounded-2xl">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-surface-container text-on-surface sticky top-0 font-bold">
+            <tr>
+              <th class="p-3">Mandi Hub</th>
+              <th class="p-3">Crop Variety</th>
+              <th class="p-3">Rate / 40kg</th>
+              <th class="p-3">Trend</th>
+              <th class="p-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="mandiTableRows" class="divide-y divide-surface-container-low">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Verified Tajir / Buyer Drawer -->
+  <div id="drawerTajir" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden justify-end">
+    <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl">handshake</span>
+            <h3 class="font-display font-extrabold text-lg text-primary">Verified Tajir Registry</h3>
+          </div>
+          <button onclick="closeModal('drawerTajir')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+        </div>
+        <p class="text-xs text-on-surface-variant">Connect directly with wholesale mills, terminal buyers, and export agents.</p>
+        <div id="tajirItems" class="space-y-3">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="p-4 bg-surface-container-low rounded-2xl space-y-2 mt-4 text-xs">
+        <strong class="text-primary block font-bold">Instant Buyer Callback</strong>
+        <input id="quickTajirPhone" placeholder="Enter your phone number" class="w-full bg-white rounded-xl p-2 border-0"/>
+        <button onclick="requestTajirCallback()" class="w-full bg-primary hover:bg-primary-container text-white py-2 rounded-xl font-bold">Request Direct Call</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Logistics Confirmation Modal -->
+  <div id="modalLogistics" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-2xl">local_shipping</span>
+          <h3 class="font-display font-extrabold text-lg text-primary">Confirm Fleet Booking</h3>
+        </div>
+        <button onclick="closeModal('modalLogistics')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <div class="bg-surface-container-low p-3.5 rounded-2xl text-xs space-y-1.5">
+        <div class="flex justify-between"><span class="text-on-surface-variant">Route:</span> <strong id="logSummaryRoute">Sargodha → Karachi Port Qasim</strong></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Vehicle:</span> <span id="logSummaryVeh">Mazda Titan 6-Wheeler</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Total Freight:</span> <strong id="logSummaryAmt" class="text-primary font-mono text-sm font-bold">PKR 78,500</strong></div>
+      </div>
+      <div class="text-xs space-y-2">
+        <label class="font-semibold text-on-surface-variant block">Farm Pickup Address</label>
+        <input id="logAddress" placeholder="e.g. Chak 42-SB, Bhagtanwala Tehsil" class="w-full bg-surface-container-low rounded-xl p-2.5 border-0 font-medium"/>
+        <label class="flex items-center gap-2 pt-1 cursor-pointer">
+          <input id="logInsurance" type="checkbox" checked class="rounded text-primary focus:ring-primary"/>
+          <span>Include 100% Crop Transit Insurance (+PKR 1,500)</span>
+        </label>
+      </div>
+      <button onclick="submitLogisticsBooking()" class="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-xl font-bold text-sm shadow flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <span>Confirm Dispatch &amp; Assign Driver</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 7. Export LC Terms Modal -->
+  <div id="modalExport" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">description</span>
+          <h3 class="font-display font-extrabold text-lg text-primary">LC &amp; Phytosanitary Terms</h3>
+        </div>
+        <button onclick="closeModal('modalExport')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <div class="bg-surface-container-low p-3.5 rounded-2xl text-xs space-y-1.5">
+        <div class="flex justify-between"><span class="text-on-surface-variant">Product:</span> <strong id="expTitle" class="text-primary font-bold">Super Kernel Basmati</strong></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Price:</span> <span id="expPrice" class="font-mono font-bold">$1,120 / Ton</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Destination Wharf:</span> <span id="expPort">Jebel Ali Port (UAE)</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Quality Cert:</span> <span class="text-secondary font-bold font-mono">SGS-PAK-2024-998</span></div>
+      </div>
+      <div class="p-3 bg-surface-container rounded-2xl text-xs space-y-1 text-on-surface-variant">
+        <strong class="text-primary block font-bold">State Bank Approved Settlement:</strong>
+        <p>100% Irrevocable Confirmed Letter of Credit at sight with phytosanitary compliance clearance.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button onclick="triggerToast('Downloaded SGS Specification Sheet (PDF)')" class="bg-surface-container hover:bg-surface-container-high text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">file_download</span>
+          <span>Download Spec</span>
+        </button>
+        <button onclick="triggerToast('Buyer LC Inquiry Dispatched to Export Desk')" class="bg-primary hover:bg-primary-container text-white py-2.5 rounded-xl font-bold shadow">
+          <span>Submit LC Inquiry</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Pesticide QR Scanner Modal -->
+  <div id="modalScanner" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2 text-secondary font-bold">
+          <span class="material-symbols-outlined text-2xl">verified</span>
+          <h3 class="font-display font-extrabold text-base text-primary">Pesticide Authentication</h3>
+        </div>
+        <button onclick="closeModal('modalScanner')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <!-- Viewfinder -->
+      <div class="relative w-full h-40 bg-zinc-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center text-white">
+        <div class="w-28 h-28 border-2 border-dashed border-secondary-fixed rounded-2xl flex items-center justify-center relative">
+          <div class="absolute inset-x-2 h-0.5 bg-secondary-fixed animate-scan"></div>
+          <span class="material-symbols-outlined text-4xl opacity-50">qr_code_scanner</span>
+        </div>
+        <span class="text-[10px] text-secondary-fixed font-mono mt-2">Align Barcode in Viewfinder</span>
+      </div>
+      <div id="scanResultCard" class="bg-secondary-container/30 p-3.5 rounded-2xl text-xs space-y-1.5">
+        <div class="flex justify-between"><span class="text-on-surface-variant">Product:</span> <strong id="scanProduct">Sona Urea (Prilled 46% N)</strong></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Manufacturer:</span> <span id="scanMfg">Fauji Fertilizer Company Ltd.</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Batch Serial:</span> <span class="font-mono text-primary font-bold">PK-FFC-99281-2024</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">Status:</span> <span class="text-secondary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> 100% Genuine Licensed</span></div>
+      </div>
+      <div class="flex gap-2 text-xs">
+        <button onclick="resimulateScan()" class="flex-1 bg-surface-container hover:bg-surface-container-high text-primary py-2.5 rounded-xl font-bold">Scan Another</button>
+        <button onclick="closeModal('modalScanner')" class="flex-1 bg-primary hover:bg-primary-container text-white py-2.5 rounded-xl font-bold shadow">Done / Theek Hai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Digital Wallet & Khata Modal -->
+  <div id="modalWallet" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white max-w-sm w-full rounded-3xl p-6 shadow-2xl space-y-4 border border-outline-variant/30">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
+          <h3 class="font-display font-extrabold text-base text-primary">Kisan Digital Wallet &amp; Khata</h3>
+        </div>
+        <button onclick="closeModal('modalWallet')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">✕</button>
+      </div>
+      <div class="bg-primary text-white p-4 rounded-2xl shadow">
+        <span class="text-[11px] text-secondary-fixed uppercase tracking-wider block font-bold">Available Trading Balance</span>
+        <div id="walletBalLarge" class="font-mono text-3xl font-extrabold my-1">PKR 0.00</div>
+        <span class="text-[11px] text-surface-container-high block">1-Link SBP Trust Account • 0% Deduction</span>
+      </div>
+      <div class="space-y-2 text-xs">
+        <label class="font-semibold text-on-surface-variant block">Deposit Funds to Escrow Balance</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="setDepositVal(10000)" class="py-2 rounded-xl bg-surface-container font-mono font-bold hover:bg-surface-container-high">+10,000</button>
+          <button onclick="setDepositVal(50000)" class="py-2 rounded-xl bg-surface-container font-mono font-bold hover:bg-surface-container-high">+50,000</button>
+          <button onclick="setDepositVal(150000)" class="py-2 rounded-xl bg-surface-container font-mono font-bold hover:bg-surface-container-high">+150,000</button>
+        </div>
+        <input id="depositAmount" type="number" placeholder="Or enter custom PKR" class="w-full bg-surface-container-low rounded-xl p-2.5 font-mono font-bold border-0"/>
+        <div class="grid grid-cols-3 gap-2 pt-1">
+          <button onclick="processDeposit('JazzCash')" class="p-2 border rounded-xl flex flex-col items-center hover:border-primary">
+            <span class="font-bold text-primary">JazzCash</span>
+            <span class="text-[10px] text-on-surface-variant">Instant</span>
+          </button>
+          <button onclick="processDeposit('Easypaisa')" class="p-2 border rounded-xl flex flex-col items-center hover:border-secondary">
+            <span class="font-bold text-secondary">Easypaisa</span>
+            <span class="text-[10px] text-on-surface-variant">Instant</span>
+          </button>
+          <button onclick="processDeposit('Meezan Bank')" class="p-2 border rounded-xl flex flex-col items-center hover:border-primary">
+            <span class="font-bold text-on-surface">Meezan IBFT</span>
+            <span class="text-[10px] text-on-surface-variant">Bank Transfer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== CORE JAVASCRIPT STATE & SUPABASE ENGINE ======================== -->
+  <script>
+    /**
+     * Kisan Product Platform - Comprehensive Interactivity Engine
+     * Patrolled & Founded by: Malik Siraj Kisan Zamindar
+     */
+    const produceData = [
+      {
+        id: 'p1',
+        cat: 'wheat',
+        tag: 'Wheat (Akbar-19)',
+        title: 'Prime Multan Grain Stock',
+        rate: 3950,
+        qty: '1,800 Maunds',
+        qtyNum: 1800,
+        grower: 'Chaudhry Riaz Zamindar',
+        location: 'Shujabad, Multan',
+        phone: '+92 301 4455667',
+        metric: 'Lab Moisture: 9.4% (Export Ready)'
+      },
+      {
+        id: 'p2',
+        cat: 'rice',
+        tag: 'Rice (Kainat 1121)',
+        title: 'Super Kernel Steamed Lot',
+        rate: 11200,
+        qty: '2,400 Bags',
+        qtyNum: 2400,
+        grower: 'Mian Tariq Agro Farm',
+        location: 'Kamoke, Gujranwala',
+        phone: '+92 321 7788990',
+        metric: 'Grain Length: 8.35mm Average'
+      },
+      {
+        id: 'p3',
+        cat: 'cotton',
+        tag: 'Cotton (White Gold)',
+        title: 'Kapas Phutti B-557 Clean',
+        rate: 8700,
+        qty: '750 Maunds',
+        qtyNum: 750,
+        grower: 'Sardar Allah Bakhsh',
+        location: 'Khanpur, Rahim Yar Khan',
+        phone: '+92 300 3344551',
+        metric: 'Staple Length: 28.5mm Ginning Grade'
+      },
+      {
+        id: 'p4',
+        cat: 'fruits',
+        tag: 'Orchard Citrus',
+        title: 'Kinnow Export Grade',
+        rate: 1450,
+        qty: '5,000 Crates',
+        qtyNum: 5000,
+        grower: 'Malik Siraj Orchards',
+        location: 'Bhalwal, Sargodha',
+        phone: '+92 300 8765432',
+        metric: 'Sorting: Graded, Washed & Waxed'
+      }
+    ];
+
+    const mandiData = [
+      { hub: 'Lahore Badami Bagh', crop: 'Gandam Akbar-19', rate: 3980, trend: '+1.5%', up: true },
+      { hub: 'Multan Ghalla Mandi', crop: 'Kapas Phutti', rate: 8650, trend: '+3.2%', up: true },
+      { hub: 'Sargodha Mandi', crop: 'Kinnow Citrus Box', rate: 1450, trend: '+4.0%', up: true },
+      { hub: 'Badin Mandi', crop: 'Fresh Green Chili', rate: 5400, trend: '-0.8%', up: false },
+      { hub: 'Kamoke Hub', crop: 'Kainat 1121 Rice', rate: 11200, trend: '+1.8%', up: true },
+      { hub: 'Okara Sabzi Mandi', crop: 'Red Potato Mozika', rate: 2350, trend: '+0.5%', up: true },
+      { hub: 'Peshawar Terminal', crop: 'Sugarcane Pure Gur', rate: 4900, trend: '+2.8%', up: true }
+    ];
+
+    const tajirData = [
+      { name: 'Haji Qasim Wholesale Traders', city: 'Karachi Port', focus: 'Wheat & Rice Export Bulk', phone: '+92 300 9876543' },
+      { name: 'Chenab Agri Processing Mills', city: 'Faisalabad', focus: 'Cotton Ginning & Corn Meal', phone: '+92 301 2233445' },
+      { name: 'Al-Madina Food Logistics', city: 'Lahore', focus: 'Potatoes, Onions, Chilies', phone: '+92 322 1122334' },
+      { name: 'Gulf Horizon Produce FZC', city: 'Dubai (Al-Aweer)', focus: 'Kinnow & Mango Reefer Import', phone: '+971 50 1234567' }
+    ];
+
+    // Supabase client hooks wrapper
+    window.supabaseApp = {
+      insertProduce: async (record) => {
+        try {
+          if (window.supabase && typeof window.supabase.from === 'function') {
+            await window.supabase.from('produce_listings').insert([record]);
+          }
+        } catch (err) { console.warn('Supabase fallback:', err); }
+        return { success: true };
+      },
+      insertBid: async (bid) => {
+        try {
+          if (window.supabase && typeof window.supabase.from === 'function') {
+            await window.supabase.from('mandi_bids').insert([bid]);
+          }
+        } catch (err) { console.warn('Supabase fallback:', err); }
+        return { success: true };
+      },
+      bookTransport: async (booking) => {
+        try {
+          if (window.supabase && typeof window.supabase.from === 'function') {
+            await window.supabase.from('logistics_bookings').insert([booking]);
+          }
+        } catch (err) { console.warn('Supabase fallback:', err); }
+        return { success: true };
+      }
+    };
+
+    // State Variables
+    let currentWallet = parseFloat(localStorage.getItem('kp_wallet') || '0.00');
+    let currentBoli = { title: '', rate: 3950, qty: 100, grower: '', location: '', cat: '' };
+
+    function updateWalletDisplay() {
+      const formatted = 'PKR ' + currentWallet.toLocaleString('en-US', { minimumFractionDigits: 2 });
+      document.getElementById('headerWallet').textContent = formatted;
+      document.getElementById('walletBalLarge').textContent = formatted;
+      localStorage.setItem('kp_wallet', currentWallet.toString());
+    }
+
+    // Toast Function
+    function triggerToast(msg, icon = 'check_circle') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('translate-x-32', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-x-32', 'opacity-0');
+      }, 3500);
+    }
+
+    // Modal Handlers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).classList.add('flex');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    // Render Produce Cards
+    function renderProduce(filter = 'all') {
+      const feed = document.getElementById('produceFeed');
+      feed.innerHTML = '';
+      const items = filter === 'all' ? produceData : produceData.filter(i => i.cat === filter);
+      items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:shadow-md transition-all';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs bg-surface-container font-mono px-2 py-0.5 rounded text-primary font-bold">${p.tag}</span>
+              <span class="text-xs font-mono font-bold text-tertiary">PKR ${p.rate.toLocaleString()} / Md</span>
+            </div>
+            <h4 class="font-display font-extrabold text-base text-primary mt-2">${p.title}</h4>
+            <div class="mt-2 text-xs space-y-1 text-on-surface-variant">
+              <div><span>Lot Size:</span> <strong class="text-on-surface">${p.qty}</strong></div>
+              <div><span>Zamindar:</span> <strong class="text-on-surface">${p.grower}</strong></div>
+              <div><span>Mandi:</span> ${p.location}</div>
+              <div class="text-[11px] text-secondary font-bold pt-1">${p.metric}</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-4 border-t border-surface-container-low mt-4">
+            <button onclick="openZamindarModal('${p.grower}', '${p.phone}', '${p.location}', '${p.title}')" class="bg-surface-container hover:bg-surface-container-high text-primary py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">call</span>
+              <span>Direct Call</span>
+            </button>
+            <button onclick="openBoliModal('${p.title}', ${p.rate}, 100, '${p.grower}', '${p.location}', '${p.cat}')" class="bg-primary hover:bg-primary-container text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 shadow">
+              <span class="material-symbols-outlined text-[16px]">gavel</span>
+              <span>Lock Boli</span>
+            </button>
+          </div>
+        `;
+        feed.appendChild(card);
+      });
+    }
+
+    function filterProduceUI(cat) {
+      ['all', 'wheat', 'veg', 'rice', 'cotton'].forEach(c => {
+        const btn = document.getElementById('btn-filter-' + c);
+        if (btn) {
+          if (c === cat) {
+            btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-primary text-white shadow-sm';
+          } else {
+            btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-primary';
+          }
+        }
+      });
+      renderProduce(cat);
+    }
+
+    // Boli Modal
+    function openBoliModal(title, rate, qty, grower, location, cat) {
+      currentBoli = { title, rate, qty: qty || 100, grower, location, cat };
+      document.getElementById('boliCropTitle').textContent = title;
+      document.getElementById('boliGrower').textContent = grower;
+      document.getElementById('boliLocation').textContent = location;
+      document.getElementById('boliRateDisplay').textContent = 'PKR ' + rate.toLocaleString();
+      document.getElementById('boliQtyInput').value = currentBoli.qty;
+      recalcBoliTotal();
+      openModal('modalBoli');
+    }
+
+    function adjustBoliPrice(delta) {
+      currentBoli.rate = Math.max(100, currentBoli.rate + delta);
+      document.getElementById('boliRateDisplay').textContent = 'PKR ' + currentBoli.rate.toLocaleString();
+      recalcBoliTotal();
+    }
+
+    function recalcBoliTotal() {
+      const q = parseInt(document.getElementById('boliQtyInput').value) || 0;
+      currentBoli.qty = q;
+      const total = currentBoli.rate * q;
+      document.getElementById('boliTotalDisplay').textContent = 'PKR ' + total.toLocaleString();
+    }
+
+    async function confirmBoliDeposit() {
+      const total = currentBoli.rate * currentBoli.qty;
+      await window.supabaseApp.insertBid({
+        crop: currentBoli.title,
+        rate: currentBoli.rate,
+        quantity: currentBoli.qty,
+        total: total,
+        grower: currentBoli.grower,
+        created_at: new Date().toISOString()
+      });
+      closeModal('modalBoli');
+      triggerToast(`Boli of PKR ${currentBoli.rate}/Md locked for ${currentBoli.title}! Deposit logged to Escrow.`);
+    }
+
+    // Zamindar Call Modal
+    function openZamindarModal(name, phone, loc, crop) {
+      document.getElementById('zamName').textContent = name;
+      document.getElementById('zamLoc').textContent = loc;
+      document.getElementById('zamCrop').textContent = crop;
+      document.getElementById('zamCallLink').href = 'tel:' + phone;
+      document.getElementById('zamWaLink').href = 'https://wa.me/' + phone.replace(/[^0-9]/g, '');
+      openModal('modalZamindar');
+    }
+
+    // Sell Crop Handler
+    function openSellModal() { openModal('modalSell'); }
+    async function handlePostCrop(e) {
+      e.preventDefault();
+      const newLot = {
+        id: 'p_' + Date.now(),
+        cat: document.getElementById('newCat').value,
+        tag: document.getElementById('newCat').value.toUpperCase(),
+        title: document.getElementById('newTitle').value,
+        rate: parseInt(document.getElementById('newRate').value),
+        qty: document.getElementById('newQty').value + ' Maunds',
+        qtyNum: parseInt(document.getElementById('newQty').value),
+        grower: document.getElementById('newGrower').value,
+        location: document.getElementById('newLocation').value,
+        phone: document.getElementById('newPhone').value,
+        metric: 'Lab Inspection Ready • Direct Field'
+      };
+      produceData.unshift(newLot);
+      await window.supabaseApp.insertProduce(newLot);
+      renderProduce();
+      closeModal('modalSell');
+      triggerToast(`Fasal "${newLot.title}" broadcasted to 1,200+ buyers on Mandi Board!`);
+    }
+
+    // Mandi Rates Table
+    function openMandiModal() {
+      renderMandiRows(mandiData);
+      openModal('modalMandi');
+    }
+    function renderMandiRows(list) {
+      const tbody = document.getElementById('mandiTableRows');
+      tbody.innerHTML = '';
+      list.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-surface-container-low transition-colors';
+        tr.innerHTML = `
+          <td class="p-3 font-bold text-on-surface">${m.hub}</td>
+          <td class="p-3 text-on-surface-variant">${m.crop}</td>
+          <td class="p-3 font-mono font-bold text-primary">PKR ${m.rate.toLocaleString()}</td>
+          <td class="p-3 font-mono font-bold ${m.up ? 'text-secondary' : 'text-red-500'}">${m.trend}</td>
+          <td class="p-3 text-right">
+            <button onclick="closeModal('modalMandi'); openBoliModal('${m.crop} (${m.hub})', ${m.rate}, 100, 'Govt Mandi Auction', '${m.hub}', 'wheat')" class="bg-primary hover:bg-primary-container text-white px-2.5 py-1 rounded-lg text-[11px] font-bold">Lock Rate</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function searchMandi() {
+      const q = document.getElementById('mandiSearch').value.toLowerCase();
+      const filtered = mandiData.filter(m => m.hub.toLowerCase().includes(q) || m.crop.toLowerCase().includes(q));
+      renderMandiRows(filtered);
+    }
+
+    // Tajir Drawer
+    function openTajirDrawer() {
+      const container = document.getElementById('tajirItems');
+      container.innerHTML = '';
+      tajirData.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-surface-container-low rounded-2xl border border-outline-variant/30 text-xs space-y-1';
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <strong class="text-primary font-bold">${t.name}</strong>
+            <span class="text-[10px] bg-secondary-fixed text-primary px-1.5 py-0.2 rounded font-bold">Verified Buyer</span>
+          </div>
+          <div class="text-on-surface-variant">${t.city} • <span class="text-on-surface">${t.focus}</span></div>
+          <div class="pt-2 flex gap-2">
+            <a href="tel:${t.phone}" onclick="triggerToast('Calling Tajir Desk...')" class="flex-1 bg-primary text-white py-1.5 rounded-lg text-center font-bold">Call Buyer</a>
+            <a href="https://wa.me/${t.phone.replace(/[^0-9]/g, '')}" target="_blank" onclick="triggerToast('Opening WhatsApp...')" class="flex-1 bg-[#25D366] text-white py-1.5 rounded-lg text-center font-bold">WhatsApp</a>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      openModal('drawerTajir');
+    }
+    function requestTajirCallback() {
+      const phone = document.getElementById('quickTajirPhone').value;
+      if (phone) {
+        triggerToast('Callback request sent to Karachi & Dubai export desks!');
+        closeModal('drawerTajir');
+      } else {
+        triggerToast('Please enter your phone number.', 'error');
+      }
+    }
+
+    // Freight Calculator
+    function calcFreight() {
+      const orig = document.getElementById('calcOrigin').value;
+      const dest = document.getElementById('calcDest').value;
+      const veh = document.getElementById('calcVeh').value;
+      const m = parseInt(document.getElementById('calcMaunds').value) || 350;
+      let base = 65000;
+      if (dest.includes('Karachi')) base = 75000;
+      if (dest.includes('Lahore')) base = 32000;
+      if (veh === 'shehzore') base = base * 0.55;
+      if (veh === 'tenwheeler') base = base * 1.4;
+      const total = Math.round(base + (m * 10));
+      document.getElementById('calcTotal').textContent = 'PKR ' + total.toLocaleString();
+    }
+    function openLogisticsModal() {
+      const orig = document.getElementById('calcOrigin').value;
+      const dest = document.getElementById('calcDest').value;
+      const veh = document.getElementById('calcVeh').options[document.getElementById('calcVeh').selectedIndex].text;
+      const amt = document.getElementById('calcTotal').textContent;
+      document.getElementById('logSummaryRoute').textContent = `${orig} → ${dest}`;
+      document.getElementById('logSummaryVeh').textContent = veh;
+      document.getElementById('logSummaryAmt').textContent = amt;
+      openModal('modalLogistics');
+    }
+    async function submitLogisticsBooking() {
+      const route = document.getElementById('logSummaryRoute').textContent;
+      const amt = document.getElementById('logSummaryAmt').textContent;
+      const addr = document.getElementById('logAddress').value;
+      await window.supabaseApp.bookTransport({ route, amount: amt, address: addr, booked_at: new Date().toISOString() });
+      closeModal('modalLogistics');
+      triggerToast('Transport driver assigned with live GPS tracking!');
+    }
+
+    // Export Modal
+    function openExportModal(title, price, port) {
+      document.getElementById('expTitle').textContent = title;
+      document.getElementById('expPrice').textContent = price;
+      document.getElementById('expPort').textContent = port;
+      openModal('modalExport');
+    }
+
+    // Scanner Modal
+    function openScannerModal() { openModal('modalScanner'); }
+    function resimulateScan() {
+      const samples = [
+        { p: 'Confidor 200 SL (Bayer)', m: 'Bayer Crop Science Ltd.', s: 'Genuine Bayer Batch' },
+        { p: 'Curacron 500 EC (Syngenta)', m: 'Syngenta Pakistan Ltd.', s: 'Genuine Syngenta Batch' },
+        { p: 'Sona DAP Fertilizer', m: 'Fauji Fertilizer Bin Qasim', s: 'Verified Licensed Lot' }
+      ];
+      const random = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById('scanProduct').textContent = random.p;
+      document.getElementById('scanMfg').textContent = random.m;
+      triggerToast('Scanned and authenticated bottle batch barcode!');
+    }
+
+    // Wallet Modal
+    function openWalletModal() { openModal('modalWallet'); }
+    function setDepositVal(v) { document.getElementById('depositAmount').value = v; }
+    function processDeposit(channel) {
+      const amt = parseFloat(document.getElementById('depositAmount').value) || 0;
+      if (amt <= 0) {
+        triggerToast('Please select or enter an amount to deposit.', 'error');
+        return;
+      }
+      currentWallet += amt;
+      updateWalletDisplay();
+      closeModal('modalWallet');
+      triggerToast(`Deposited PKR ${amt.toLocaleString()} via ${channel} into secure Escrow Wallet!`);
+    }
+
+    // Close on Escape Key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        ['modalBoli', 'modalZamindar', 'modalSell', 'modalMandi', 'drawerTajir', 'modalLogistics', 'modalExport', 'modalScanner', 'modalWallet'].forEach(closeModal);
+      }
+    });
+
+    // Initialize
+    updateWalletDisplay();
+    renderProduce();
+    calcFreight();
+  </script>
+</body>
+</html>
